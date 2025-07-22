@@ -71,7 +71,9 @@ export const UserLogout = async (req, res) => {
 
 export const UserProfile = async (req, res) => {
   try {
-    res.send(req.user);
+    const user = await req.user;
+    user.password = undefined; // Exclude password from response
+    res.send(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
