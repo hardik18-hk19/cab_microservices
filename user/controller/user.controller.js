@@ -34,7 +34,7 @@ export const UserLogin = async (req, res) => {
 
   try {
     // Find user by email
-    const user = await User.find({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
@@ -58,6 +58,9 @@ export const UserLogin = async (req, res) => {
 export const UserLogout = async (req, res) => {
   try {
     const token = req.cookies.token;
+    if (!token) {
+      return res.status(400).json({ message: "No User logged in" });
+    }
     await blacklistToken.create({ token });
     res.clearCookie("token");
     res.status(200).json({ message: "User logged out successfully" });
