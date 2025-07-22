@@ -9,7 +9,7 @@ export const CaptainAuth = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const captain = await Captain.findById(decoded.Captain.Id);
+    const captain = await Captain.findById(decoded.CaptainId);
 
     if (!captain) {
       return res.status(401).json({ error: "Unauthorized Captain" });
