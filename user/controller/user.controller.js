@@ -27,3 +27,29 @@ export const UserRegister = async (req, res) => {
     res.status(500).json({ error: "Error registering user" });
   }
 };
+
+export const UserLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Find user by email
+    const user = await User.find({ email });
+    if (!user) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+    // Check password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+    // Generate JWT token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.cookie("token", token);
+    // Respond with user data and token
+    res.status(200).json({ message: "User logged in successfully", token });
+  } catch (error) {
+    res.status(500).json({ error: "Error logging in user" });
+  }
+};
