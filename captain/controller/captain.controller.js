@@ -79,9 +79,9 @@ export const CaptainProfile = async (req, res) => {
   }
 };
 
-export const toggleAvailability = async (req, res, next) => {
+export const toggleAvailability = async (req, res) => {
   try {
-    const captain = await req.captain;
+    const captain = await Captain.findById(req.captain._id);
     captain.isAvailable = !captain.isAvailable;
     await captain.save();
 
