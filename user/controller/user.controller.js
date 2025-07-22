@@ -65,3 +65,11 @@ export const UserLogout = async (req, res) => {
     res.status(500).json({ error: "Error logging out user" });
   }
 };
+
+export const UserProfile = async (req, res) => {
+  try {
+    res.send(req.user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
