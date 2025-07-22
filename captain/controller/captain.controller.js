@@ -78,3 +78,16 @@ export const CaptainProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const toggleAvailability = async (req, res, next) => {
+  try {
+    const captain = await req.captain;
+    captain.isAvailable = !captain.isAvailable;
+    await captain.save();
+
+    captain.password = undefined;
+    res.status(200).json({ message: "Captain availability toggled", captain });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

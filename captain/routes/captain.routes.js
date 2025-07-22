@@ -4,6 +4,7 @@ import {
   CaptainLogout,
   CaptainRegister,
   CaptainProfile,
+  toggleAvailability,
 } from "../controller/captain.controller.js";
 import { CaptainAuth } from "../middleware/captain.middleware.js";
 
@@ -13,5 +14,6 @@ router.post("/register", CaptainRegister);
 router.post("/login", CaptainLogin);
 router.post("/logout", CaptainLogout);
 router.get("/profile", CaptainAuth, CaptainProfile);
+router.patch("/toggleavailability", CaptainAuth, toggleAvailability);
 
 export default router;
