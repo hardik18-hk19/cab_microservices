@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import blacklistToken from "../models/blacklistToken.model.js";
 
 export const UserRegister = async (req, res) => {
   const { name, email, password } = req.body;
@@ -54,7 +55,13 @@ export const UserLogin = async (req, res) => {
   }
 };
 
-export const UserLogout = (req, res) => {
-  res.clearCookie("token");
-  res.status(200).json({ message: "User logged out successfully" });
+export const UserLogout = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    await blacklistToken.create({ token });
+    res.clearCookie("token");
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Error logging out user" });
+  }
 };
