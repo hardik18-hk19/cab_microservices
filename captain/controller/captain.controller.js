@@ -2,6 +2,7 @@ import Captain from "../models/captain.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import blacklistToken from "../models/blacklistToken.model.js";
+import { subscribeToQueue } from "../service/rabbit.js";
 
 export const CaptainRegister = async (req, res) => {
   const { name, email, password } = req.body;
@@ -90,4 +91,10 @@ export const toggleAvailability = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+export const initializeRabbitSubscriptions = () => {
+  subscribeToQueue("new-ride", (data) => {
+    console.log("New ride created:", JSON.parse(data));
+  });
 };

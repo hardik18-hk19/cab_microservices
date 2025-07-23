@@ -4,12 +4,23 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import connectDb from "./config/db.js";
 import { connectRabbit } from "./service/rabbit.js";
+import { initializeRabbitSubscriptions } from "./controller/captain.controller.js";
 
 dotenv.config();
 
 const app = express();
 
-connectRabbit();
+// Connect to RabbitMQ first, then initialize subscriptions
+connectRabbit()
+  .then(() => {
+    console.log(
+      "RabbitMQ connected successfully, initializing subscriptions..."
+    );
+    initializeRabbitSubscriptions();
+  })
+  .catch((error) => {
+    console.error("Failed to connect to RabbitMQ:", error);
+  });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
